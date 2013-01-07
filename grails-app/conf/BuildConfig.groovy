@@ -1,7 +1,6 @@
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
-//grails.project.war.file = "target/${appName}-${appVersion}.war"
 
 // Disable SVN handling with release plugin
 grails.release.scm.enabled = false
@@ -36,9 +35,9 @@ grails.project.dependency.resolution = {
         // runtime 'mysql:mysql-connector-java:5.1.5'
     }
 	plugins {
-    runtime ":hibernate:$grailsVersion"
-    runtime ":jquery:1.7.2"
-		compile ":constraints:0.6.0" 
+        runtime ":hibernate:$grailsVersion"
+		compile ":constraints:0.6.0"
+        compile ":jquery:1.8.0"
 		compile ":jquery-validation:1.9" 
 		build ":tomcat:$grailsVersion"
 	}

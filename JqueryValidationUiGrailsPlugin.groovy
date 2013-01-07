@@ -25,10 +25,18 @@ class JqueryValidationUiGrailsPlugin {
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "1.2.2 > *"
     // the other plugins this plugin depends on
-    def dependsOn = [:]
+//  def dependsOn = [:]
     // resources that are excluded from plugin packaging
     def pluginExcludes = [
-            "grails-app/views/error.gsp"
+            "grails-app/views/error.gsp",
+            "grails-app/domain/org/grails/jquery/validation/ui/Address.groovy",
+            "grails-app/domain/org/grails/jquery/validation/ui/DummyDomain.groovy",
+            "grails-app/domain/org/grails/jquery/validation/ui/Person.groovy",
+            "grails-app/controllers/org/grails/jquery/validation/ui/DummyLoginController.groovy",
+            "grails-app/views/dummyLogin",
+            "grails-app/views/layouts",
+            "grails-app/services/org/grails/jquery/validation/ui/DummyService.groovy"
+
     ]
 
 	def license = "APACHE"
@@ -46,4 +54,6 @@ class JqueryValidationUiGrailsPlugin {
   def documentation = "http://limcheekin.github.com/jquery-validation-ui"
 	def issueManagement = [ system:"GitHub", url:"http://github.com/limcheekin/jquery-validation-ui/issues" ]
 	def scm = [ url:"http://github.com/limcheekin/jquery-validation-ui" ]
+
+    // TODO: Add an onConfigChange handler to this plugin
 }

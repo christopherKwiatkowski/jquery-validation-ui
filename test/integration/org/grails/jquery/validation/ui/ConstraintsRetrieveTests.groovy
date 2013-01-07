@@ -28,11 +28,6 @@ class ConstraintsRetrieveTests extends GrailsUnitTestCase {
 		assertTrue !hasError(domainClass, "title", "blank", errors)
 	}
 	
-	void testRetrieveConstraintsFromUserGroupClass() {
-		def domainClass = grailsApplication.classLoader.loadClass("org.grails.activiti.springsecurity.UserGroup")
-		def constrainedProperties = getConstrainedProperties(domainClass)
-	}
-	
 	void testRetrieveConstraintsFromPersonClass() {
 		def domainClass = grailsApplication.classLoader.loadClass("org.grails.jquery.validation.ui.Person")
 		def constrainedProperties = getConstrainedProperties(domainClass)

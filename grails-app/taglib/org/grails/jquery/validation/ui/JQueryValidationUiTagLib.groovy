@@ -20,45 +20,32 @@ import java.lang.reflect.Field
 import org.springframework.util.ReflectionUtils
 
 /**
+ * Tags for working with the JQuery Validation UI plugin.
  *
  * @author <a href='mailto:limcheekin@vobject.com'>Lim Chee Kin</a>
  *
  * @since 0.1
  */
 class JQueryValidationUiTagLib {
+    /**
+     * namespace declaration jqvalui
+     */
     static namespace = "jqvalui"
-	/* TO BE REMOVED
-    static final DEFAULT_ERROR_MESSAGE_CODES_MAP = [
-        matches: "default.doesnt.match.message",
-        url: "default.invalid.url.message",
-        creditCard: "default.invalid.creditCard.message",
-        email: "default.invalid.email.message",
-        range: "default.invalid.range.message",
-        size: "default.invalid.size.message",
-        max: "default.invalid.max.message",
-        min: "default.invalid.min.message",
-        maxSize: "default.invalid.max.size.message",
-        minSize: "default.invalid.min.size.message",
-        inList: "default.not.inlist.message",
-        blank: "default.blank.message",
-        notEqual: "default.not.equal.message",
-        nullable: "default.null.message",
-		    validator: "default.invalid.validator.message",
-		    unique: "default.not.unique.message"
-    ]
-	
-    static final ERROR_CODE_SUFFIXES = [
-		  "error",
-		  "invalid"
-    ]
-	  static final String TYPE_MISMATCH_MESSAGE_PREFIX = "typeMismatch."
-	  */
-    static final String TAG_ERROR_PREFIX = "Tag [jqvalui:renderValidationScript] Error: "
-	
 
-	  
+    /**
+     * TAG_ERROR_PREFIX "Tag [jqvalui:renderValidationScript] Error: "
+     */
+    static final String TAG_ERROR_PREFIX = "Tag [jqvalui:renderValidationScript] Error: "
+
+    /**
+     * Dependency injection of the
+     * org.grails.jquery.validation.ui.JqueryValidationService
+     */
     def jqueryValidationService
-	
+
+    /**
+     * TODO: Javadoc this tag. Make sure that the way it is specifying resources is valid.
+     */
     def resources = { attrs, body ->
         String type = attrs.remove("type")
         def packed 
@@ -75,7 +62,12 @@ class JQueryValidationUiTagLib {
             renderCSS g.resource(plugin:"jqueryValidationUi", dir:"css/qTip", file:"jquery.qtip.css")
         }
     }
-	
+
+    /**
+     * renders errors to the screen
+     * based on the renderErrorsOnTop config will
+     * render errors to a errorContainer in the specified errors container.
+     */
     def renderErrors = { attrs, body ->
         def renderErrorsOnTop = attrs.render ? Boolean.valueOf(attrs.render) : grailsApplication.config.jqueryValidationUi.get("renderErrorsOnTop", true)
         if (renderErrorsOnTop) {
@@ -101,7 +93,12 @@ class JQueryValidationUiTagLib {
 """
         }
     }
-	
+
+    /**
+     * Renders an error "FOR" a property.
+     *
+     * @attr for REQUIRED
+     */
     def renderError = { attrs, body ->
         String labelFor = attrs.remove("for")
         if (!labelFor) {
@@ -142,7 +139,10 @@ class JQueryValidationUiTagLib {
     private renderCSS(def url) {
         out << '<link rel="stylesheet" type="text/css" media="screen" href="' + url + '" />\n'
     }
-	
+
+    /**
+     *
+     */
     def renderValidationScript = { attrs, body ->
         String forClass = attrs.remove("for")
         def alsoProperties = attrs.remove("also")
@@ -150,22 +150,22 @@ class JQueryValidationUiTagLib {
         String form = attrs.remove("form")
         def config = grailsApplication.config.jqueryValidationUi
         def jQueryUiStyle = config.qTip.get("jQueryUiStyle", false)
-        String qTipClasses = config.qTip.classes?:""
-        String errorClass = attrs.errorClass?:config.errorClass?:"error"
-        String validClass = attrs.validClass?:config.validClass?:"valid"
-        String errorContainer = attrs.errorContainer?:config.errorContainer?:"#errorContainer"
-        String errorLabelContainer = attrs.errorLabelContainer?:config.errorLabelContainer?:"div.errors ul"
-        String errorElement = attrs.errorElement?:config.errorElement?:"label"
-        String errorWrapper = attrs.errorWrapper?:config.errorWrapper?:"li"
+        String qTipClasses = config.qTip.classes ?: ""
+        String errorClass = attrs.errorClass ?: config.errorClass ?: "error"
+        String validClass = attrs.validClass ?: config.validClass ?: "valid"
+        String errorContainer = attrs.errorContainer ?: config.errorContainer?:"#errorContainer"
+        String errorLabelContainer = attrs.errorLabelContainer ?: config.errorLabelContainer ?: "div.errors ul"
+        String errorElement = attrs.errorElement ?: config.errorElement ?: "label"
+        String errorWrapper = attrs.errorWrapper ?: config.errorWrapper ?: "li"
         
         
         def onsubmit = attrs.onsubmit ? Boolean.valueOf(attrs.onsubmit) : config.get("onsubmit", true)
         def onkeyup = attrs.onkeyup ?: config.get("onkeyup", false)
         def qtip = attrs.qtip ? Boolean.valueOf(attrs.qtip) : config.get("qtip", false)
                 
-		    def submitHandler = attrs.remove("submitHandler")?:config.submitHandler?:null
-		    def highlightHandler = attrs.remove("highlight")?:config.highlight?:null
-		    def unhighlightHandler = attrs.remove("unhighlight")?:config.unhighlight?:null
+        def submitHandler = attrs.remove("submitHandler")?:config.submitHandler?:null
+        def highlightHandler = attrs.remove("highlight")?:config.highlight?:null
+        def unhighlightHandler = attrs.remove("unhighlight")?:config.unhighlight?:null
 		    		    
 		    
         def renderErrorsOnTop = attrs.renderErrorsOnTop ? Boolean.valueOf(attrs.renderErrorsOnTop) : config.get("renderErrorsOnTop", true)

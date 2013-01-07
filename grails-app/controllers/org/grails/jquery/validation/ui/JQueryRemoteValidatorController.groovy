@@ -15,6 +15,7 @@
 package org.grails.jquery.validation.ui
 
 import org.codehaus.groovy.grails.validation.ConstrainedPropertyBuilder
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory
 import org.springframework.validation.BeanPropertyBindingResult
 
 /**
@@ -26,36 +27,71 @@ import org.springframework.validation.BeanPropertyBindingResult
 class JQueryRemoteValidatorController {
 	
 	def jqueryValidationService
+    def messageSource
 
-	def validate = {		
+	def validate(){
+        log.debug ("Received following params to validate action: " + params.toString())
 		def validatableClass = grailsApplication.classLoader.loadClass(params.validatableClass)
+        log.debug ("Loaded via grailsApplication.classLoader validateableClass:  " + validatableClass)
 		def constrainedProperties = jqueryValidationService.getConstrainedProperties(validatableClass)
-		
-		def validatableInstance 
+        log.debug ("Retrieved constrainedProperties from validatableClass: " + constrainedProperties)
+
+		def validatableInstance
+        /*
+        If the check is for a Domain Class versus a Command Object then we can simply do:
+        grailsApplication.isDomainClass(validatableClass.getClass()) and then read
+        in an object based on the passed in params.id
+         */
 		if (!params.id || params.id.equals("0")) {
 			validatableInstance = validatableClass.newInstance()
+            log.debug ("Created a newInstance of validatableClass and stored in validatableInstance " + validatableInstance)
 		} else {
-			validatableInstance = validatableClass.get(params.id.toLong())
+			validatableInstance = validatableClass.read(params.id.toLong())
+            log.debug ("Retrieved validatableClass from the database via read() method: " + validatableInstance)
 		}
-		
+
+        applicationContext.autowireCapableBeanFactory.autowireBeanProperties(validatableInstance,
+                AutowireCapableBeanFactory.AUTOWIRE_BY_NAME, false)
+        log.debug ("Autowired bean references for dependency injection support: " + validatableInstance)
+
 		def errors = new BeanPropertyBindingResult(validatableInstance, validatableInstance.class.name)
+        log.debug ("Errors created by BeanPropertyBindingResult: " + errors)
+
 		def constrainedProperty = constrainedProperties[params.property]
-		constrainedProperty.messageSource = grailsApplication.mainContext.messageSource
+        log.debug ("Retrieved the constrainedProperty: $constrainedProperty using params.property entry: ${params.property} ")
+
+		constrainedProperty.messageSource = messageSource
+        log.debug ("Set constrainedProperty messageSource to: " + constrainedProperty.messageSource)
 
 		Object propertyValue 
 		if (constrainedProperty.propertyType == String) {
 			propertyValue = params[params.property]
+            log.debug ("constrainedProperty.propertyType is String retrieving string value from params: $propertyValue" )
 		} else {
-      bindData(validatableInstance, params, [include: [params.property]])
-	    propertyValue = validatableInstance."${params.property}"		
+            bindData(validatableInstance, params, [include: [params.property]])
+            log.debug("bindData from params.property ${params.property} to validatableInstance")
+	        propertyValue = validatableInstance."${params.property}"
+            log.debug ("propertyValue after bindData: $propertyValue class: ${propertyValue.class.simpleName}")
 		}
 		
 		constrainedProperty.validate(validatableInstance, propertyValue, errors)
-		if(validatableInstance.isAttached()) validatableInstance.discard()
+        log.debug ("After validate constrainedProperty errors object: $errors" )
+
+        if(validatableInstance.metaClass.respondsTo(validatableInstance, "isAttached") &&
+                validatableInstance.isAttached()){
+            validatableInstance.discard()
+            log.debug ("Discarded validatableInstance since it was a domain class")
+        }
+
 		def fieldError = errors.getFieldError(params.property)
-		// println "fieldError = ${fieldError}, code = ${fieldError?.code}, params.constraint = ${params.constraint}"
-		
+
+        log.debug  ("fieldError = ${fieldError}")
+        log.debug  ("fieldError.code = ${fieldError?.code}")
+        log.debug  ("params.constraint = ${params.constraint}")
+        log.debug  ("params.property = ${params.property}")
+
 		response.setContentType("text/json;charset=UTF-8")
+
 		if (fieldError && fieldError.code.indexOf(params.constraint) > -1) {
 			// if constraint is known then render false (use default message), 
 			// otherwise render custom message.
