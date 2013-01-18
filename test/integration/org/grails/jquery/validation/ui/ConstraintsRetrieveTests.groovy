@@ -29,7 +29,7 @@ class ConstraintsRetrieveTests extends GrailsUnitTestCase {
 	}
 	
 	void testRetrieveConstraintsFromPersonClass() {
-		def domainClass = grailsApplication.classLoader.loadClass("org.grails.jquery.validation.ui.Person")
+		def domainClass = grailsApplication.classLoader.loadClass("org.grails.jquery.validation.ui.DummyPerson")
 		def constrainedProperties = getConstrainedProperties(domainClass)
 		assertNotNull "findField(domainClass, 'homeAddress') not null", findField(domainClass,'homeAddress')
 		 
@@ -76,13 +76,13 @@ class ConstraintsRetrieveTests extends GrailsUnitTestCase {
 	}
 	
 	void testRetrieveConstraintsFromCommandInControllerClass() {
-		def commandClass = grailsApplication.classLoader.loadClass("org.grails.jquery.validation.ui.LoginCommand")
+		def commandClass = grailsApplication.classLoader.loadClass("org.grails.jquery.validation.ui.DummyLoginCommand")
 		assertNotNull commandClass
 		assertNotNull commandClass.constraints
 	}
 	
 	void testRetrieveMessageCodesFromPersonWorkAddressNumber() {
-		def domainClass = grailsApplication.classLoader.loadClass("org.grails.jquery.validation.ui.Person")
+		def domainClass = grailsApplication.classLoader.loadClass("org.grails.jquery.validation.ui.DummyPerson")
 		def constrainedProperties = getConstrainedProperties(domainClass)
 		
 		constrainedProperties.each { name, constrainedProperty ->

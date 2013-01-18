@@ -1,7 +1,7 @@
 overview:
   title: Overview
   installation: Installation
-  sampleApplication: Person Sample Application
+  sampleApplication: DummyPerson Sample Application
 usage:
   title: Usage
   configuration: Configuration

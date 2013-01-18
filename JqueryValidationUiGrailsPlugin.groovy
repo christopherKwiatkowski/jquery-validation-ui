@@ -47,7 +47,7 @@ class JqueryValidationUiGrailsPlugin {
 		[name:"Brian Saville", email:"bksaville@gmail.com"],
 	]
 	
-    def title = "JQuery Validation UI Plugin - Client Side Validation without writing JavaScript"
+    def title = "JQuery Validation UI Plugin"
     def description = 'JQuery Validation UI Plugin - Client Side Validation without writing JavaScript'
 
     // URL to the plugin's documentation
